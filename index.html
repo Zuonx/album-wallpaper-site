@@ -1,0 +1,596 @@
+<title>Album Wallpaper</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap');
+
+  :root{
+    --ground:#0b0c0f;
+    --surface:#17181c;
+    --surface-2:#1f2024;
+    --line: rgba(244,239,231,0.10);
+    --line-soft: rgba(244,239,231,0.06);
+    --ink:#f4efe7;
+    --ink-dim:#aba49b;
+    --ink-faint:#726c64;
+    --accent:#e8a63d;
+    --accent-ink:#1a1206;
+    --accent-2:#5c9297;
+    --accent-3:#c1543a;
+    --radius: 18px;
+    --radius-sm: 12px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ background:var(--ground); scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    cursor:default;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--accent); color:var(--accent-ink); }
+
+  /* faint grain for depth, not decoration for its own sake — keeps the
+     large dark fields from looking flat/plasticky */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  h1,h2,h3{ font-family:'Fraunces', Georgia, serif; text-wrap:balance; margin:0; }
+  .display{ font-optical-sizing:auto; }
+  .eyebrow{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  p{ color:var(--ink-dim); line-height:1.65; margin:0; }
+  a{ color:inherit; }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; position:relative; z-index:2; }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:30;
+    background:rgba(11,12,15,0.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:66px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand img{ width:27px; height:27px; border-radius:9px; display:block; }
+  .brand span{ font-family:'Fraunces', serif; font-weight:600; font-size:18px; }
+  .navlinks{ display:flex; align-items:center; gap:30px; font-size:14.5px; font-weight:500; color:var(--ink-dim); }
+  .navlinks a{ transition:color .2s ease; }
+  .navlinks a:hover{ color:var(--ink); }
+
+  .btn{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.01em;
+    padding:10px 20px;
+    border-radius:999px;
+    border:1px solid transparent;
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:transform .25s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .25s ease;
+    will-change:transform;
+  }
+  .btn-solid{ background:var(--accent); color:var(--accent-ink); }
+  .btn-solid:hover{ background:#f0b455; transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(232,166,61,0.55); }
+  .btn-line{ border-color:var(--line); color:var(--ink); }
+  .btn-line:hover{ border-color:var(--ink-faint); }
+
+  /* ---------- hero: one clean line, one clean photo — everything
+     that explains itself lives below, where it can earn its scroll ---------- */
+  .hero{ padding:64px 0 0; position:relative; }
+  .hero-head-min{ padding-bottom:28px; text-align:center; }
+  .hero-head-min h1{
+    font-size:clamp(34px,4.6vw,56px);
+    line-height:1.08;
+    font-weight:500;
+    letter-spacing:-0.01em;
+    max-width:18ch;
+    margin:0 auto;
+  }
+  .hero-head-min h1 em{ font-style:italic; font-weight:400; color:var(--accent); }
+
+  .intro{ padding:44px 0 56px; text-align:center; }
+  .intro-p{ font-size:18px; max-width:46ch; margin:0 auto; color:var(--ink-dim); }
+
+  .tilt-wrap{ perspective:1400px; }
+  .frame{
+    position:relative;
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:#000;
+    transform-style:preserve-3d;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .frame img{ width:100%; display:block; }
+  .frame::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(11,12,15,0) 55%, rgba(11,12,15,0.75) 100%);
+    pointer-events:none;
+  }
+  .frame .menubar{
+    position:absolute; top:0; left:0; right:0; height:32px;
+    background:rgba(10,10,12,0.55);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; gap:8px;
+    padding:0 16px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:11.5px; color:rgba(244,239,231,0.6);
+    letter-spacing:.01em;
+    z-index:2;
+  }
+  .frame .menubar span:nth-child(3){ margin-left:auto; }
+  .live-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 0 rgba(232,166,61,0.6);
+    animation:pulse 2.2s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(232,166,61,0.55); }
+    70%{ box-shadow:0 0 0 7px rgba(232,166,61,0); }
+    100%{ box-shadow:0 0 0 0 rgba(232,166,61,0); }
+  }
+  @media (prefers-reduced-motion: reduce){ .live-dot{ animation:none; } }
+
+  /* ---------- tracklist: the feature list styled the way a record
+     sleeve actually prints its side A, not a generic ticker banner ---------- */
+  .tracklist{ border-bottom:1px solid var(--line); background:var(--surface); }
+  .tracklist ol{
+    list-style:none; margin:0; padding:0;
+    max-width:1120px; margin:0 auto; padding:0 32px;
+    display:grid; grid-template-columns:repeat(5,1fr);
+  }
+  .tracklist li{
+    display:flex; align-items:baseline; gap:10px;
+    padding:16px 14px; border-left:1px solid var(--line);
+    font-size:13.5px; color:var(--ink-dim); font-weight:500;
+  }
+  .tracklist li:first-child{ border-left:none; padding-left:0; }
+  .tracklist li b{ font-family:'Fraunces', serif; font-style:italic; color:var(--ink-faint); font-weight:500; }
+  @media (max-width:860px){
+    .tracklist ol{ grid-template-columns:repeat(2,1fr); }
+    .tracklist li:nth-child(3){ border-left:none; }
+  }
+
+  /* liner-note spec strip */
+  .specs{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-bottom:1px solid var(--line);
+  }
+  .specs div{
+    padding:20px 4px;
+    border-left:1px solid var(--line);
+  }
+  .specs div:first-child{ border-left:none; padding-left:0; }
+  .spec-label{ font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:6px; }
+  .spec-value{ font-size:15px; color:var(--ink); font-weight:500; }
+
+  /* ---------- reveal-on-scroll: default state is fully visible; the
+     "armed" class (added by JS after load) is what lets a not-yet-seen
+     element sit slightly lowered/faded — so with JS disabled or before
+     it runs, nothing is ever stuck invisible. ---------- */
+  body.reveal-armed .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  body.reveal-armed .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* scale-in for the screenshot-bearing panels — a touch of the
+     "settles into place" motion Apple product pages use */
+  body.reveal-armed .reveal-scale{ opacity:0; transform:translateY(18px) scale(.95); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  body.reveal-armed .reveal-scale.in-view{ opacity:1; transform:translateY(0) scale(1); }
+
+  /* stagger groups: the parent is what's observed, and each child
+     fades/rises in turn on a short cascading delay */
+  body.reveal-armed .stagger > *{ opacity:0; transform:translateY(16px); transition:opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1); }
+  body.reveal-armed .stagger.in-view > *{ opacity:1; transform:translateY(0); }
+  .stagger > *:nth-child(1){ transition-delay:.02s; }
+  .stagger > *:nth-child(2){ transition-delay:.09s; }
+  .stagger > *:nth-child(3){ transition-delay:.16s; }
+  .stagger > *:nth-child(4){ transition-delay:.23s; }
+  .stagger > *:nth-child(5){ transition-delay:.30s; }
+  .stagger > *:nth-child(6){ transition-delay:.37s; }
+
+  .disc{ animation-play-state:paused; }
+  body.reveal-armed .reveal-scale.in-view .disc{ animation-play-state:running; }
+  body:not(.reveal-armed) .disc{ animation-play-state:running; }
+
+  @media (prefers-reduced-motion: reduce){
+    body.reveal-armed .reveal,
+    body.reveal-armed .reveal-scale,
+    body.reveal-armed .stagger > *{ opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+
+  /* ---------- feature rows ---------- */
+  .feature{
+    display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center;
+    padding:100px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .feature.reverse .feature-media{ order:2; }
+  .feature.reverse .feature-copy{ order:1; }
+  .feature-copy h2{ font-size:clamp(28px,3vw,38px); font-weight:500; margin-bottom:18px; }
+  .feature-copy p{ font-size:16px; max-width:44ch; }
+  .feature-copy .eyebrow{ display:block; margin-bottom:14px; }
+
+  .feature-media{
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:var(--surface);
+    transition:transform .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .feature-media:hover{ transform:translateY(-4px); }
+  .feature-media img{ width:100%; display:block; }
+
+  /* lyric mock */
+  .lyric-mock{
+    aspect-ratio:4/3;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(92,146,151,0.35), transparent 60%),
+      radial-gradient(ellipse at 75% 80%, rgba(193,84,58,0.30), transparent 55%),
+      #101114;
+    padding:40px;
+  }
+  .lyric-mock .ln{ font-family:'Fraunces', serif; font-style:italic; font-size:15px; color:rgba(244,239,231,0.28); }
+  .lyric-mock .ln.active{ font-size:22px; color:var(--ink); font-style:normal; font-weight:500; text-shadow:0 0 22px rgba(232,166,61,0.35); }
+
+  /* vinyl / square mock */
+  .shape-mock{
+    aspect-ratio:4/3;
+    display:flex; align-items:center; justify-content:center; gap:34px;
+    background:#101114;
+  }
+  .shape-mock .tile{ text-align:center; }
+  .shape-mock .sq{
+    width:120px; height:120px; border-radius:22px;
+    background:linear-gradient(135deg,#3a2a1c,#1c2a2c);
+    border:1px solid rgba(244,239,231,0.14);
+  }
+  .disc{
+    width:130px; height:130px; border-radius:50%;
+    background:
+      repeating-radial-gradient(circle at center, rgba(244,239,231,0.05) 0 2px, transparent 2px 6px),
+      radial-gradient(circle at center, #2a2224 0 34%, #0c0c0d 35%);
+    display:flex; align-items:center; justify-content:center;
+    animation:spin 9s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .disc{ animation:none; } }
+  .disc .label{
+    width:44px; height:44px; border-radius:50%;
+    background:linear-gradient(135deg,#3a2a1c,#1c2a2c);
+    border:1px solid rgba(0,0,0,0.4);
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .shape-mock .cap{ margin-top:14px; font-size:11.5px; font-weight:700; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; }
+
+  /* paint mock */
+  .paint-mock{
+    aspect-ratio:4/3;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(232,166,61,0.55), transparent 45%),
+      radial-gradient(circle at 75% 25%, rgba(92,146,151,0.5), transparent 45%),
+      radial-gradient(circle at 55% 80%, rgba(193,84,58,0.45), transparent 50%),
+      #14100c;
+    filter:blur(0.3px) saturate(1.1);
+    position:relative;
+  }
+  .paint-mock::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(115deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 6px);
+    mix-blend-mode:overlay;
+  }
+
+  /* ---------- faq ---------- */
+  .faq{ padding:100px 0; border-bottom:1px solid var(--line); }
+  .faq-head{ margin-bottom:44px; }
+  .faq-head h2{ font-size:clamp(28px,3vw,38px); font-weight:500; margin-top:14px; max-width:20ch; }
+  .faq-list{ display:grid; gap:0; }
+  .faq-item{
+    display:grid; grid-template-columns:1fr 1.4fr; gap:48px;
+    padding:28px 0;
+    border-top:1px solid var(--line);
+    transition:background .25s ease;
+    border-radius:var(--radius-sm);
+  }
+  .faq-item:hover{ background:var(--line-soft); }
+  .faq-item:last-child{ border-bottom:1px solid var(--line); }
+  .faq-q{ font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:18px; color:var(--ink); }
+  .faq-a{ font-size:15px; color:var(--ink-dim); max-width:52ch; }
+  .faq-a strong{ color:var(--ink); font-weight:700; }
+
+  /* ---------- pricing ---------- */
+  .pricing{ padding:104px 0 116px; text-align:center; position:relative; }
+  .pricing .eyebrow{ justify-content:center; display:flex; margin-bottom:16px; }
+  .pricing h2{ font-size:clamp(30px,3.6vw,44px); font-weight:500; margin-bottom:14px; }
+  .pricing > .wrap > p{ max-width:52ch; margin:0 auto 48px; font-size:16px; }
+
+  .sleeve{
+    max-width:420px; margin:0 auto;
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:42px 38px 36px;
+    background:linear-gradient(180deg, var(--surface), var(--surface-2));
+    position:relative;
+    text-align:left;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+  }
+  .sleeve:hover{ transform:translateY(-6px); box-shadow:0 40px 80px -30px rgba(0,0,0,0.55); }
+  .sleeve .corner{
+    position:absolute; top:24px; right:26px;
+    font-size:11px; font-weight:700; color:var(--ink-faint);
+    letter-spacing:.08em;
+  }
+  .sleeve .price{ font-family:'Fraunces', serif; font-size:56px; font-weight:500; line-height:1; }
+  .sleeve .price sup{ font-size:22px; top:-1.4em; }
+  .sleeve .price small{ font-family:'Plus Jakarta Sans'; font-size:14px; color:var(--ink-dim); font-weight:500; margin-left:6px; }
+  .sleeve ul{ list-style:none; padding:0; margin:26px 0 30px; display:flex; flex-direction:column; gap:12px; }
+  .sleeve li{ font-size:14.5px; color:var(--ink-dim); display:flex; gap:10px; }
+  .sleeve li::before{ content:"—"; color:var(--accent); flex:none; }
+  .sleeve .btn{ width:100%; justify-content:center; padding:14px 18px; font-size:14.5px; }
+  .sleeve .fine{ margin-top:16px; font-size:12.5px; color:var(--ink-faint); text-align:center; }
+
+  /* ---------- footer ---------- */
+  footer{ border-top:1px solid var(--line); padding:36px 0; }
+  footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; }
+  footer .fnote{ font-size:12.5px; color:var(--ink-faint); }
+  footer .flinks{ display:flex; gap:20px; font-size:13px; color:var(--ink-dim); font-weight:500; }
+  footer a{ transition:color .2s ease; }
+  footer a:hover{ color:var(--ink); }
+
+  @media (max-width:860px){
+    .wrap{ padding:0 20px; }
+    .specs{ grid-template-columns:repeat(2,1fr); }
+    .specs div:nth-child(3){ border-left:none; }
+    .feature, .feature.reverse{ grid-template-columns:1fr; }
+    .feature.reverse .feature-media, .feature.reverse .feature-copy{ order:initial; }
+    .feature{ padding:64px 0; gap:28px; }
+    .navlinks{ display:none; }
+    .faq-item{ grid-template-columns:1fr; gap:10px; }
+    .frame{ transform:none !important; }
+  }
+</style>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><img src="icon.png" alt=""><span>Album Wallpaper</span></div>
+    <div class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a class="btn btn-solid" href="https://zuxstudio.lemonsqueezy.com/checkout/buy/9bae6a36-510b-4571-bf01-c913c5e68207" target="_blank" rel="noopener">Buy — $5.99</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-head-min">
+    <h1 class="display">Your desktop, <em>painted</em> by whatever's playing.</h1>
+  </div>
+  <div class="wrap">
+    <div class="tilt-wrap">
+      <div class="frame" id="tiltFrame">
+        <div class="menubar"><span class="live-dot"></span><span>cowboy in LA — LANY</span><span>Album Wallpaper</span></div>
+        <img id="heroImg" src="hero.png" alt="A macOS desktop showing the album cover for LANY's 'cowboy in LA' on a softly painted background, with a synced lyric line glowing beneath it.">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap intro reveal">
+  <p class="intro-p">It watches Music.app and repaints your desktop as the track plays — cover art, a hand‑painted background, lyrics in sync.</p>
+</div>
+
+<div class="wrap">
+  <div class="specs stagger">
+    <div><span class="spec-label">Requires</span><span class="spec-value">macOS 14+</span></div>
+    <div><span class="spec-label">Reads from</span><span class="spec-value">Apple Music</span></div>
+    <div><span class="spec-label">Runs on</span><span class="spec-value">Apple Silicon & Intel</span></div>
+    <div><span class="spec-label">License</span><span class="spec-value">Buy once, keep it</span></div>
+  </div>
+</div>
+
+<div class="tracklist">
+  <ol class="stagger">
+    <li><b>A1</b> Live album art</li>
+    <li><b>A2</b> Word‑paced lyrics</li>
+    <li><b>A3</b> Painted backgrounds</li>
+    <li><b>A4</b> Spinning vinyl mode</li>
+    <li><b>A5</b> Menu bar control</li>
+  </ol>
+</div>
+
+<main id="how">
+  <div class="wrap">
+
+    <section class="feature reveal">
+      <div class="feature-copy">
+        <span class="eyebrow">Lyrics, word by word</span>
+        <h2 class="display">Reads along with the song, not just the title.</h2>
+        <p>The current line lifts and glows. The next one waits quietly underneath. No account, nothing to open.</p>
+      </div>
+      <div class="feature-media reveal-scale">
+        <div class="lyric-mock stagger">
+          <span class="ln">Lightning, best show that I've ever seen</span>
+          <span class="ln active">Happy in a pair of jeans</span>
+          <span class="ln">Oklahoma, it made a man out of me</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature reverse reveal">
+      <div class="feature-copy">
+        <span class="eyebrow">Two ways to wear the cover</span>
+        <h2 class="display">A square breathing gently, or a record that actually spins.</h2>
+        <p>Switch from the menu bar, any time — no restart.</p>
+      </div>
+      <div class="feature-media reveal-scale">
+        <div class="shape-mock stagger">
+          <div class="tile"><div class="sq"></div><div class="cap">Square</div></div>
+          <div class="tile"><div class="disc"><div class="label"></div></div><div class="cap">Vinyl</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature reveal">
+      <div class="feature-copy">
+        <span class="eyebrow">One bake per track, not per frame</span>
+        <h2 class="display">A background painted from the cover, not pasted from it.</h2>
+        <p>Each cover is run through an oil‑paint filter once, then cached — hand‑brushed color, without the CPU cost of a live filter.</p>
+      </div>
+      <div class="feature-media reveal-scale">
+        <div class="paint-mock"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="faq-head reveal">
+      <span class="eyebrow">Before you buy</span>
+      <h2 class="display">What to expect.</h2>
+    </div>
+    <div class="faq-list stagger">
+
+      <div class="faq-item">
+        <div class="faq-q">Does this change my lock screen too?</div>
+        <div class="faq-a"><strong>No.</strong> That's an Apple-only surface — this replaces your desktop, not your lock screen.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need an Apple Music subscription?</div>
+        <div class="faq-a"><strong>Yes.</strong> It reads straight from Music.app — no Spotify, no free-tier account.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Will the lyrics always line up exactly?</div>
+        <div class="faq-a">Close, not frame-perfect — timings come from LRCLIB, a community database. No synced lyrics for a track? The words space out evenly instead.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">The menu bar icon disappeared — is it broken?</div>
+        <div class="faq-a">Probably not — a full menu bar can hide new icons. Press <strong>⌥⇧W</strong> anywhere to toggle it instead.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">I force‑quit it, and it just came back. Why?</div>
+        <div class="faq-a">By design — it stays running the way your desktop picture does. Use the menu bar toggle to actually turn it off.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Apple Silicon or Intel — does it matter?</div>
+        <div class="faq-a">Either is fine — it's a universal binary, native on both.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <span class="eyebrow reveal">Pricing</span>
+    <h2 class="display reveal">Buy it once. Keep it.</h2>
+    <p class="reveal">No login, no premium tier — everything above, in the one price.</p>
+
+    <div class="sleeve reveal-scale">
+      <span class="corner">ALBUM WALLPAPER</span>
+      <div class="price">$5<sup>99</sup><small>USD, one time</small></div>
+      <ul class="stagger">
+        <li>Live album art, square or vinyl</li>
+        <li>Synced, word‑paced lyrics</li>
+        <li>Hand‑painted animated background</li>
+        <li>Menu bar control · multi‑display aware</li>
+        <li>Free updates, no subscription</li>
+      </ul>
+      <a class="btn btn-solid" href="https://zuxstudio.lemonsqueezy.com/checkout/buy/9bae6a36-510b-4571-bf01-c913c5e68207" target="_blank" rel="noopener">Buy now — $5.99</a>
+      <div class="fine">Secure checkout via Lemon Squeezy.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="fnote">© 2026 Album Wallpaper — built solo on macOS.</span>
+    <div class="flinks">
+      <a href="mailto:giljueon@gmail.com">giljueon@gmail.com</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Scroll-reveal: only arms once JS has actually run, so the CSS
+  // fallback (everything simply visible) is what a no-JS or failed
+  // page always gets.
+  document.body.classList.add('reveal-armed');
+  var els = document.querySelectorAll('.reveal, .reveal-scale, .stagger');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Hero screenshot tilt — a light 3D response to the cursor, scaled
+  // down enough that it reads as "this is a real object" rather than
+  // a demo of the effect itself.
+  var frame = document.getElementById('tiltFrame');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (frame && !reduceMotion && window.matchMedia('(min-width:861px)').matches){
+    frame.parentElement.addEventListener('mousemove', function(e){
+      var r = frame.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      frame.style.transform = 'rotateY(' + (px*3.5) + 'deg) rotateX(' + (py*-3.5) + 'deg)';
+    });
+    frame.parentElement.addEventListener('mouseleave', function(){
+      frame.style.transform = 'rotateY(0deg) rotateX(0deg)';
+    });
+  }
+
+  // Hero photo drifts a little slower than the page as you scroll past
+  // it — the same depth cue Apple's product pages lean on, kept small
+  // enough that it reads as physical rather than as a demo.
+  var heroImg = document.getElementById('heroImg');
+  if (heroImg && !reduceMotion){
+    var ticking = false;
+    window.addEventListener('scroll', function(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var r = heroImg.parentElement.getBoundingClientRect();
+        var offset = r.top * 0.06;
+        heroImg.style.transform = 'translateY(' + offset + 'px) scale(1.04)';
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+})();
+</script>
