@@ -107,8 +107,28 @@
   }
   .hero-head-min h1 em{ font-style:italic; font-weight:400; color:var(--accent); }
 
-  .intro{ padding:44px 0 56px; text-align:center; }
+  .intro{ padding:44px 0 20px; text-align:center; }
   .intro-p{ font-size:18px; max-width:46ch; margin:0 auto; color:var(--ink-dim); }
+
+  .notice{
+    max-width:640px; margin:28px auto 44px;
+    display:flex; align-items:flex-start; gap:14px;
+    padding:16px 20px;
+    border:1px solid rgba(232,166,61,0.35);
+    background:rgba(232,166,61,0.07);
+    border-radius:var(--radius-sm);
+  }
+  .notice-mark{
+    flex:none; width:20px; height:20px; margin-top:1px;
+    border-radius:50%;
+    background:var(--accent); color:var(--accent-ink);
+    font-family:'Fraunces', serif; font-weight:600; font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .notice p{ font-size:14px; color:var(--ink-dim); line-height:1.6; }
+  .notice p strong{ color:var(--ink); }
+  .notice p a{ color:var(--accent); font-weight:600; text-decoration:none; white-space:nowrap; }
+  .notice p a:hover{ text-decoration:underline; }
 
   .tilt-wrap{ perspective:1400px; }
   .frame{
@@ -399,6 +419,13 @@
 
 <div class="wrap intro reveal">
   <p class="intro-p">It watches Music.app and repaints your desktop as the track plays — cover art, a hand‑painted background, lyrics in sync.</p>
+</div>
+
+<div class="wrap reveal">
+  <div class="notice">
+    <span class="notice-mark">!</span>
+    <p><strong>First launch takes one extra click.</strong> macOS blocks every app downloaded outside the App Store the first time — signed and notarized ones included. Click <strong>Done</strong>, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>. It only asks once. <a href="#faq">Full steps ↓</a></p>
+  </div>
 </div>
 
 <div class="wrap">
